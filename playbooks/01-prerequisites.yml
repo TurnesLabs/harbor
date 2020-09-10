@@ -1,0 +1,5 @@
+---
+- hosts: registry_nodes
+  roles:
+    - docker-ce
+    - docker-compose
