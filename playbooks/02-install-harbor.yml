@@ -1,0 +1,4 @@
+---
+- hosts: registry_nodes
+  roles:
+    - harbor 
