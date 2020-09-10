@@ -4,7 +4,7 @@ Vagrant.configure("2") do |config|
 
 
 
-  config.vm.define "harbor" do |harbor|
+  config.vm.define ENV['HARBOR_HOSTNAME'] do |harbor|
     harbor.vm.box = ENV['HARBOR_OS']
     harbor.vm.hostname = ENV['HARBOR_HOSTNAME']
     harbor.vm.network "private_network", ip: ENV['HARBOR_IP']
@@ -21,7 +21,17 @@ Vagrant.configure("2") do |config|
     ansible.playbook = "playbooks/00-check.yml"
     ansible.become = true
     ansible.groups = {
-        "registry_nodes" => [ENV["HARBOR_HOSTNAME"]]
+        "registry_nodes" => [ENV['HARBOR_HOSTNAME']]
+    }
+    ansible.extra_vars = {}
+  end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "playbooks/01-prerequisites.yml"
+    ansible.become = true
+    ansible.groups = {
+        "registry_nodes" => [ENV['HARBOR_HOSTNAME']]
     }
     ansible.extra_vars = {}
   end

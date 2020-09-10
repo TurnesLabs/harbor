@@ -1,0 +1,7 @@
+---
+- name: Download and copy Docker Compose
+  get_url:
+    dest: /usr/local/bin/docker-compose
+    url: https://github.com/docker/compose/releases/download/1.27.0/docker-compose-Linux-x86_64
+    checksum: "sha256:32f543c86617f317b111db9ba30f8b52cb2e5fff4d95f9ae03a476bba5724042"
+    mode: 'g+x,o+x'
