@@ -1,0 +1,39 @@
+- name: Install Python pip3  
+  apt:
+    name: python3-pip
+    state: present
+
+- name: required Python library to execute docker with ansible
+  pip:
+    state: present
+    name: "{{ docker_pip_packages }}"
+
+- name: Download Harbor
+  get_url:
+    dest: /tmp/harbor-online.tgz
+    url: "{{ harbor_online_installer }}"
+    checksum: md5:665c237875a445866d6238c90f9f362a  
+
+- name: Unpack Harbor to /tmp/harbor-online
+  unarchive:
+    src: /tmp/harbor-online.tgz
+    dest: "{{ harbor_folder }}"
+    remote_src: yes
+    group: docker
+    owner: vagrant
+    
+- name: Create Harbor YML File
+  template:
+    src: harbor.yml
+    dest: "{{ harbor_folder }}/harbor/"
+
+- name: Run installer
+  command: "./install.sh"
+  args:
+    chdir: "{{ harbor_folder }}/harbor"
+    creates: "{{ harbor_folder }}/harbor_install_log.txt"
+
+- name: Start Harbor compose      
+  docker_compose:
+    project_src: "{{ harbor_folder }}/harbor"  
+    

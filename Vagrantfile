@@ -35,4 +35,17 @@ Vagrant.configure("2") do |config|
     }
     ansible.extra_vars = {}
   end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.compatibility_mode = "2.0"
+    ansible.playbook = "playbooks/02-install-harbor.yml"
+    ansible.become = true
+    ansible.groups = {
+        "registry_nodes" => [ENV['HARBOR_HOSTNAME']]
+    }
+    ansible.extra_vars = {
+      "harbor_ip" => ENV['HARBOR_IP'],
+      "harbor_admin_password" => ENV['HARBOR_ADMIN_PASSWORD'],
+    }
+  end
 end
